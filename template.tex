@@ -1,0 +1,229 @@
+\documentclass[landscape,a4page]{article}
+\pagestyle{empty}
+
+\usepackage[margin=1.0cm,left=0.6cm,right=0.6cm]{geometry}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Heros}
+\usepackage{lipsum}
+\usepackage{luacode,multicol}
+\begin{document}
+% nastavení oddělení sloupců
+\columnseprule=0.3pt
+\columnsep=20pt
+\parindent=0pt
+\parskip=4pt
+\begin{multicols*}{3}
+
+\begin{luacode*}
+require("lualibs.lua")
+
+local s =  utilities.json.tolua([[
+[
+{
+    "order_number": "37",
+    "order_status": "Zpracov\u00e1v\u00e1 se",
+    "order_date": "2021-02-16 11:55",
+    "customer_note": "zkus &%$\\",
+    "billing_first_name": "Jirka",
+    "billing_last_name": "Nov\u00e1k",
+    "billing_company": "",
+    "billing_address": "A 1",
+    "billing_city": "a",
+    "billing_state": "",
+    "billing_postcode": "11111",
+    "billing_country": "CZ",
+    "billing_email": "michal.h21@gmail.com",
+    "billing_phone": "1",
+    "shipping_first_name": "Jirka",
+    "shipping_last_name": "Nov\u00e1k",
+    "shipping_address": "A 1",
+    "shipping_city": "a",
+    "shipping_state": "",
+    "shipping_postcode": "11111",
+    "shipping_country": "CZ",
+    "payment_method_title": "",
+    "cart_discount": "0",
+    "order_subtotal": "0.00",
+    "shipping_method_title": "Doprava zdarma",
+    "order_shipping": "0",
+    "order_refund": 0,
+    "order_total": "0",
+    "order_total_tax": 0,
+    "products": [
+        {
+            "sku": "F52899",
+            "line_id": 1,
+            "name": "Speci\u00e1ln\u00ed pedagogika \/ Josef Slow\u00edk",
+            "qty": "1",
+            "item_price": 0
+        },
+        {
+            "sku": "F51899",
+            "line_id": 1,
+            "name": "Speci\u00e1ln\u00ed pedagogika \/ Josef Slow\u00edk",
+            "qty": "1",
+            "item_price": 0
+        },
+        {
+            "sku": "2H51899",
+            "line_id": 1,
+            "name": "Speci\u00e1ln\u00ed pedagogika \/ Josef Slow\u00edk",
+            "qty": "1",
+            "item_price": 0
+        },
+        {
+            "sku": "Sc51899",
+            "line_id": 1,
+            "name": "Speci\u00e1ln\u00ed pedagogika \/ Josef Slow\u00edk",
+            "qty": "1",
+            "item_price": 0
+        }
+    ],
+    "coupons": []
+},
+{
+    "order_number": "31",
+    "order_status": "Zpracov\u00e1v\u00e1 se",
+    "order_date": "2021-02-16 11:30",
+    "customer_note": "",
+    "billing_first_name": "Jirka",
+    "billing_last_name": "Nov\u00e1k",
+    "billing_company": "",
+    "billing_address": "A 1",
+    "billing_city": "a",
+    "billing_state": "",
+    "billing_postcode": "11111",
+    "billing_country": "CZ",
+    "billing_email": "michal.h21@gmail.com",
+    "billing_phone": "1",
+    "shipping_first_name": "Jirka",
+    "shipping_last_name": "Nov\u00e1k",
+    "shipping_address": "A 1",
+    "shipping_city": "a",
+    "shipping_state": "",
+    "shipping_postcode": "11111",
+    "shipping_country": "CZ",
+    "payment_method_title": "Hotov\u011b p\u0159i doru\u010den\u00ed",
+    "cart_discount": "0",
+    "order_subtotal": "5.00",
+    "shipping_method_title": "Doprava zdarma",
+    "order_shipping": "0",
+    "order_refund": 0,
+    "order_total": "5",
+    "order_total_tax": 0,
+    "products": [
+        {
+            "sku": "",
+            "line_id": 1,
+            "name": "Helus, N\u011bjak\u00e1 psychologie",
+            "qty": "1",
+            "item_price": 5
+        }
+    ],
+    "coupons": []
+},
+{
+    "order_number": "26",
+    "order_status": "Dokon\u010deno",
+    "order_date": "2021-02-15 22:45",
+    "customer_note": "",
+    "billing_first_name": "Jirka",
+    "billing_last_name": "Nov\u00e1k",
+    "billing_company": "",
+    "billing_address": "A 1",
+    "billing_city": "a",
+    "billing_state": "",
+    "billing_postcode": "11111",
+    "billing_country": "CZ",
+    "billing_email": "michal.h21@gmail.com",
+    "billing_phone": "1",
+    "shipping_first_name": "Jirka",
+    "shipping_last_name": "Nov\u00e1k",
+    "shipping_address": "A 1",
+    "shipping_city": "a",
+    "shipping_state": "",
+    "shipping_postcode": "11111",
+    "shipping_country": "CZ",
+    "payment_method_title": "Hotov\u011b p\u0159i doru\u010den\u00ed",
+    "cart_discount": "0",
+    "order_subtotal": "5.00",
+    "shipping_method_title": "Doprava zdarma",
+    "order_shipping": "0",
+    "order_refund": 0,
+    "order_total": "5",
+    "order_total_tax": 0,
+    "products": [
+        {
+            "sku": "",
+            "line_id": 1,
+            "name": "Helus, N\u011bjak\u00e1 psychologie",
+            "qty": "1",
+            "item_price": 5
+        }
+    ],
+    "coupons": []
+}
+]
+]])
+
+
+
+local function escape_print(text)
+  -- this prevents
+  tex.sprint(-2, text)
+end
+
+local function print_header(header, value)
+  tex.print("\\textbf{" .. header .. ":} ")
+  escape_print(value)
+  tex.print("\\par")
+end
+
+for _, order in ipairs(s) do
+  print_header("Objednávka číslo", order.order_number)
+  print_header("Status objednávky", order.order_status)
+  print_header("Uživatel", order.billing_first_name .. " " .. order.billing_last_name)
+  print_header("E-mail", order.billing_email)
+  print_header("Telefon", order.billing_phone)
+  print_header("Poznámka", order.customer_note)
+  tex.print([[
+  \bigskip
+  \begin{tabular}{p{.2\linewidth}p{.5\linewidth}}]])
+  table.sort(order.products, function(a,b)
+    local siga = a.sku or ""
+    local sigb = b.sku or ""
+    -- signatura může být 2H222, nebo F12222
+    local pattern = "(2?%a+)(.+)"
+    local starta, resta = siga:match(pattern)
+    local startb, restb = sigb:match(pattern)
+    if starta==startb then
+      -- porovnávat čísla jen když je stejný začátek
+      return resta < restb 
+    end
+    return starta < startb
+  end)
+  for _,v in ipairs(order.products) do
+    escape_print(v.sku)
+    tex.print("&")
+    escape_print(v.name)
+    tex.print("\\\\")
+  end
+  tex.print([[
+  \end{tabular}
+
+  \vfill
+  \null
+   
+  ]])
+  tex.print("\\par")
+  tex.print("\\columnbreak")
+
+end
+
+
+
+\end{luacode*}
+\end{multicols*}
+
+\end{document}
+
