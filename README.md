@@ -12,6 +12,7 @@ V administračním rozhraní WordPressu vybereme v menu `Woocommerce` položku
 `Export Orders`. 
 
 ![Nastavení statusů](screenshot2.png)
+
 Ve formuláři `Order statuses` je třeba odebrat položku `Dokončeno`.
 
 V levém formuláři pak vybereme formát `JSON` a stiskneme tlačítko `Preview`.
