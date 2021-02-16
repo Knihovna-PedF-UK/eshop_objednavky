@@ -19,7 +19,7 @@ require("lualibs.lua")
 
 local s =  utilities.json.tolua([[
 @@@
-]])
+]]) or {}
 
 
 
@@ -33,6 +33,7 @@ local function print_header(header, value)
   escape_print(value)
   tex.print("\\par")
 end
+
 
 for _, order in ipairs(s) do
   print_header("Objednávka číslo", order.order_number)
