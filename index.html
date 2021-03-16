@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LaTeX CGI tests</title>
+    <meta charset="UTF-8">
+    <style type="text/css" media="screen">
+      img{
+        max-width:100%;
+        width: auto;
+      }
+      figcaption{
+        text-align: center;
+        font-weight: bold;
+        margin: 1em;
+
+      }
+      textarea{
+        display:block;
+      }
+      
+    </style>
+    <!-- <script src="https://www.learnlatex.org/assets/scripts/runlatex.js"></script> -->
+    <style>
+      body {margin:auto; max-width: 70em;}
+      div.h {background-color: #F5F5FF;margin: .5em 0;}
+      pre {background-color: #EEE;margin:0;padding: .5em;}
+    </style>
+    
+  </head>
+  <body>
+    <form style="display:none">
+<textarea id="template">
+\documentclass[landscape,a4page]{article}
+\pagestyle{empty}
+
+\usepackage[margin=1.0cm,left=0.6cm,right=0.6cm]{geometry}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Heros}
+\usepackage{lipsum}
+\usepackage{luacode,multicol}
+\begin{document}
+% nastavení oddělení sloupců
+\columnseprule=0.3pt
+\columnsep=20pt
+\parindent=0pt
+\parskip=4pt
+\begin{multicols*}{3}
+
+\begin{luacode*}
+require("lualibs.lua")
+
+local s =  utilities.json.tolua([[
+@@@
+]]) or {}
+
+
+
+local function escape_print(text)
+  -- this prevents
+  tex.sprint(-2, text)
+end
+
+local function print_header(header, value)
+  tex.print("\\textbf{" .. header .. ":} ")
+  escape_print(value)
+  tex.print("\\par")
+end
+
+
+for _, order in ipairs(s) do
+  print_header("Objednávka číslo", order.order_number)
+  print_header("Status objednávky", order.order_status)
+  print_header("Uživatel", order.billing_first_name .. " " .. order.billing_last_name)
+  print_header("E-mail", order.billing_email)
+  print_header("Telefon", order.billing_phone)
+  print_header("Poznámka", order.customer_note)
+  tex.print([[
+  \bigskip
+  \begin{tabular}{p{.2\linewidth}p{.5\linewidth}}]])
+  table.sort(order.products, function(a,b)
+    local siga = a.sku or ""
+    local sigb = b.sku or ""
+    -- signatura může být 2H222, nebo F12222
+    local pattern = "(2?%a+)(.+)"
+    local starta, resta = siga:match(pattern)
+    local startb, restb = sigb:match(pattern)
+    if starta==startb then
+      -- porovnávat čísla jen když je stejný začátek
+      return resta &lt; restb 
+    end
+    return starta &lt; startb
+  end)
+  for _,v in ipairs(order.products) do
+    escape_print(v.sku)
+    tex.print("&amp;")
+    escape_print(v.name)
+    tex.print("\\\\")
+  end
+  tex.print([[
+  \end{tabular}
+
+  \vfill
+  \null
+   
+  ]])
+  tex.print("\\par")
+  tex.print("\\columnbreak")
+
+end
+
+
+
+\end{luacode*}
+\end{multicols*}
+
+\end{document}
+
+</textarea>
+    </form>
+    <h1>Generování objednávkových lístků pro vyřazenou literaturu</h1>
+    <p>Do tohoto formuláře vložte JSON soubor exportovaný z Woocommerce. <a href="#navod">Návod</a></p>
+    <form id="input" name="input">
+      <textarea rows="20" cols="95" id="json"></textarea>
+      <input type="submit" value="Vytvořit PDF" />
+    </form>
+
+    <h1 id="navod">Návod na export z Woocommerce</h1>
+    <p>V administračním rozhraní Wordpressu vyberte menu <samp>WooCommerce -&gt; Export Orders</samp>. Zde zvolte následující možnosti:</p>
+    <ul>
+      <li>Format: JSON</li>
+      <li>Order statuses: odstraňte <q>Dokončeno</q></li>
+    </ul>
+    <figure>
+      <figcaption>Rozhraní exportu</figcaption>
+      <img src="woocommerce-export.png" alt="rozhraní exportu z Woocommerce" />
+    </figure>
+    <p>Export provedete zvolením tlačítka <q>Preview</q>. Zobrazí se textové pole s
+    kódem jako na následujícím obrázku. Ten zkopírujte a vložte do <a href="#input">textového
+      pole na této stránce</a>. Stiskněte tlačítko <q>Vytvořit PDF</q> a zobrazí se
+    vygenerované objednávkové lístky.</p>
+    <figure>
+      <figcaption>JSON kód ke zkopírování</figcaption>
+      <img src="woocommerce-json.png" alt="Vyexportovaný JSON">
+    </figure>
+
+  </body>
+<script type="text/javascript">
+
+// modified version of https://stackoverflow.com/a/20392392/2467963
+function validate_json (jsonString){
+    try {
+        var o = JSON.parse(jsonString);
+        if (o && typeof o === "object") {
+            return true;
+        }
+    }
+    catch (e) { }
+    return false;
+};
+
+
+function form_submit(){
+    // get LaTeX template from the hidden <textarea>
+    let template = document.getElementById("template").value;
+    // get pasted JSON data
+    let json = document.getElementById("json").value;
+    if(validate_json(json)){
+        let filled = template.replace("@@@", json);
+        console.log(filled);
+    } else {
+        alert("Chyba: vadný vstup");
+    }
+}
+document.getElementById("input").addEventListener('submit', form_submit);
+</script> 
+</html>
