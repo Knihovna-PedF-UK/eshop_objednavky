@@ -15,7 +15,16 @@ V administračním rozhraní WordPressu vybereme v menu `Woocommerce` položku
 
 Ve formuláři `Order statuses` je třeba odebrat položku `Dokončeno`.
 
-V levém formuláři pak vybereme formát `JSON` a stiskneme tlačítko `Preview`. Vygenerovaný JSON kód zkopírujeme a vytvoříme PDF pomocí
+V levém formuláři pak vybereme formát `JSON` a stiskneme tlačítko `Preview`. 
+
+### Vytvoření objednávek pomocí www formuláře
+
+Vygenerovaný `JSON` kód vložíme do formuláře na [této
+stránce](https://knihovna-pedf-uk.github.io/eshop_objednavky/).
+
+### Vytvoření objednávek pomocí skriptu
+
+Vygenerovaný JSON kód zkopírujeme a vytvoříme PDF pomocí
 
     xclip -o | ./eshop_objednavky.lua 
 
