@@ -43,7 +43,7 @@
 \columnseprule=0.3pt
 \columnsep=20pt
 \parindent=0pt
-\parskip=4pt
+\parskip=2pt
 \begin{multicols*}{3}
 
 \begin{luacode*}
@@ -94,7 +94,7 @@ for _, order in ipairs(s) do
     escape_print(v.sku)
     tex.print("&amp;")
     escape_print(v.name)
-    tex.print("\\\\")
+    tex.print("\\par")
   end
   tex.print([[
   \end{tabular}
