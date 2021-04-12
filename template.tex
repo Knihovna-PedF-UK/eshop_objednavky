@@ -5,14 +5,17 @@
 \usepackage{fontspec}
 \setmainfont{TeX Gyre Heros}
 \usepackage{lipsum}
-\usepackage{luacode,multicol}
+\usepackage{luacode,multicol,longtable}
 \begin{document}
 % nastavení oddělení sloupců
 \columnseprule=0.3pt
 \columnsep=20pt
 \parindent=0pt
-\parskip=4pt
+\parskip=2pt
+\newcommand\printline[2]{\parbox{.2\linewidth}{#1}~\parbox{.7\linewidth}{#2}\\}
+
 \begin{multicols*}{3}
+  \sloppy
 
 \begin{luacode*}
 require("lualibs.lua")
@@ -31,7 +34,7 @@ end
 local function print_header(header, value)
   tex.print("\\textbf{" .. header .. ":} ")
   escape_print(value)
-  tex.print("\\par")
+  tex.print("\\\\")
 end
 
 
@@ -42,9 +45,7 @@ for _, order in ipairs(s) do
   print_header("E-mail", order.billing_email)
   print_header("Telefon", order.billing_phone)
   print_header("Poznámka", order.customer_note)
-  tex.print([[
-  \bigskip
-  \begin{tabular}{p{.2\linewidth}p{.5\linewidth}}]])
+  tex.print("\\par\\bigskip\\noindent")
   table.sort(order.products, function(a,b)
     local siga = a.sku or ""
     local sigb = b.sku or ""
@@ -59,20 +60,20 @@ for _, order in ipairs(s) do
     return starta < startb
   end)
   for _,v in ipairs(order.products) do
+    tex.print("\\printline{")
     escape_print(v.sku)
-    tex.print("&")
+    tex.print("}{")
     escape_print(v.name)
-    tex.print("\\\\")
+  tex.print("}")
   end
   tex.print([[
-  \end{tabular}
-
   \vfill
   \null
-   
   ]])
   tex.print("\\par")
-  tex.print("\\columnbreak")
+  tex.print("\\pagebreak")
+  -- tex.print("\\columnbreak\\par")
+
 
 end
 
