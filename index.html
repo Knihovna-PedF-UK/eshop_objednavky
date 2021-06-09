@@ -77,6 +77,7 @@ for _, order in ipairs(s) do
   print_header("E-mail", order.billing_email)
   print_header("Telefon", order.billing_phone)
   print_header("Poznámka", order.customer_note)
+  print_header("Cena", order.subtotal)
   tex.print("\\par\\bigskip\\noindent")
   table.sort(order.products, function(a,b)
     local siga = a.sku or ""
@@ -94,6 +95,7 @@ for _, order in ipairs(s) do
   for _,v in ipairs(order.products) do
     tex.print("\\printline{")
     escape_print(v.sku)
+    tex.print("$\\times " .. v.qty .. "$")
     tex.print("}{")
     escape_print(v.name)
   tex.print("}")
