@@ -95,7 +95,7 @@ for _, order in ipairs(s) do
   for _,v in ipairs(order.products) do
     tex.print("\\printline{")
     escape_print(v.sku)
-    tex.print("$\\times$ " .. v.qty)
+    tex.print("$\\times$ " .. v.qty_minus_refund)
     tex.print("}{")
     escape_print(v.name)
   tex.print("}")
