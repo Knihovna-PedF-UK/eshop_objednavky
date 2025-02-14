@@ -51,8 +51,10 @@ for _, order in ipairs(s) do
     local sigb = b.sku or ""
     -- signatura může být 2H222, nebo F12222
     local pattern = "(2?%a+)(.+)"
-    local starta, resta = siga:match(pattern)
-    local startb, restb = sigb:match(pattern)
+    local starta, resta = siga:match(pattern) or "???", "???"
+    local startb, restb = sigb:match(pattern) or "???", "???"
+    print(siga, starta, resta)
+    print(sigb, startb, restb)
     if starta==startb then
       -- porovnávat čísla jen když je stejný začátek
       return resta < restb 
