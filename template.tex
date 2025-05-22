@@ -37,8 +37,36 @@ local function print_header(header, value)
   tex.print("\\\\")
 end
 
+-- spojíme duplicitní objednávky do jedný
+
+local used = {}
+local new = {}
 
 for _, order in ipairs(s) do
+  local mail = order.billing_email
+  if not used[mail] then
+    used[mail] = true
+    new[#new+1] = order
+  else
+    -- přidáme produkty do existující objednávky
+    local found = false
+    for _, o in ipairs(new) do
+      if o.billing_email == mail then
+        found = true
+        for _, p in ipairs(order.products) do
+          o.products[#o.products+1] = p
+        end
+        break
+      end
+    end
+    if not found then
+      new[#new+1] = order
+    end
+  end
+end
+
+
+for _, order in ipairs(new) do
   print_header("Objednávka číslo", order.order_number)
   print_header("Status objednávky", order.order_status)
   print_header("Uživatel", order.billing_first_name .. " " .. order.billing_last_name)
